@@ -11,8 +11,9 @@ Free-first implementation scaffold for the Agantu 4-player turn-based web PvP ga
 
 ## Repo Layout
 
-- `client`: Phaser frontend and socket client bootstrap
+- `client`: Phaser frontend and socket client bootstrap (lobby list + join UI)
 - `server`: Authoritative match engine, API routes, socket server
+- `GET /api/lobbies`: JSON list of **joinable** rooms only (has space and match not started)
 - `server/sql/schema.sql`: Postgres schema for match and event persistence
 - `.github/workflows/ci.yml`: CI for lint, test, and build
 

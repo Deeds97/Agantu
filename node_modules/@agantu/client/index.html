@@ -16,9 +16,23 @@
         <input id="hero-name" type="text" maxlength="40" placeholder="Your hero" />
       </label>
       <button id="join-room" type="button">Join room</button>
+      <button id="new-room-code" type="button" title="Fill a new random room code">New room code</button>
       <span id="lobby-status" role="status"></span>
     </header>
-    <div id="app"></div>
+    <div id="layout">
+      <aside id="lobby-browser" aria-label="Server lobbies">
+        <div class="lobby-browser-head">
+          <h2>Lobbies on server</h2>
+          <button id="refresh-lobbies" type="button">Refresh</button>
+        </div>
+        <p id="lobby-list-hint" class="muted">
+          Rooms with free seats (not yet in a match) appear here. Pick one or type your own code.
+        </p>
+        <p id="lobby-list-empty" class="muted hidden">No joinable lobbies right now — create a room code above.</p>
+        <ul id="lobby-list" class="lobby-list"></ul>
+      </aside>
+      <div id="app"></div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
-  </html>
+</html>

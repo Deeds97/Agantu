@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -75,8 +80,155 @@ body {
   min-width: 8rem;
 }
 
+#new-room-code,
+#refresh-lobbies {
+  padding: 8px 12px;
+  border: 1px solid #3d4a5f;
+  border-radius: 6px;
+  background: #252b38;
+  color: #e8eaef;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+#new-room-code:hover,
+#refresh-lobbies:hover {
+  background: #2f3747;
+}
+
+#layout {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 320px;
+  min-width: 0;
+}
+
+#lobby-browser {
+  width: min(320px, 100%);
+  flex-shrink: 0;
+  padding: 12px 14px;
+  background: #161a22;
+  border-right: 1px solid #2a3344;
+  overflow-y: auto;
+}
+
+.lobby-browser-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+#lobby-browser h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e8eaef;
+}
+
+.muted {
+  font-size: 0.8rem;
+  color: #9aa3b2;
+  line-height: 1.4;
+}
+
+.muted.hidden {
+  display: none;
+}
+
+.lobby-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-secondary {
+  background: #252b38 !important;
+  color: #e8eaef !important;
+  border: 1px solid #3d4a5f !important;
+  font-weight: 500 !important;
+}
+
+.btn-secondary:hover {
+  background: #2f3747 !important;
+}
+
+.lobby-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #1c2230;
+  border: 1px solid #2a3344;
+}
+
+.lobby-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.lobby-code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #a8c5ff;
+  word-break: break-all;
+}
+
+.lobby-meta {
+  font-size: 0.75rem;
+  color: #9aa3b2;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.badge-open {
+  background: #1e3d2e;
+  color: #7dffb3;
+}
+
+.lobby-item-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lobby-item-actions button {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-use-code {
+  background: #3d6df0;
+  color: #fff;
+}
+
+.btn-use-code:hover:not(:disabled) {
+  background: #2f5ad4;
+}
+
+.btn-use-code:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 #app {
   flex: 1;
   position: relative;
   min-height: 320px;
+  min-width: 0;
 }

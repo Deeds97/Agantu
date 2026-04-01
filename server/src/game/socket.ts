@@ -4,22 +4,18 @@ import { isAuthBypass } from "../config/env.js";
 import { verifySupabaseJwt } from "../auth/supabase.js";
 import { applyTurnAction, ensureSeatCanAct, scoreRewards } from "./engine.js";
 import { matchStore } from "./store.js";
+import { roomSeats } from "./roomRegistry.js";
 import { MatchPlayer, SeatIndex, TurnAction } from "./types.js";
-
-interface RoomSeat {
-  userId: string;
-  socketId: string;
-  seat: SeatIndex;
-  heroName: string;
-}
-
-const roomSeats = new Map<string, RoomSeat[]>();
 const reconnectTokens = new Map<string, { matchId: string; seat: SeatIndex; userId: string }>();
 
 function safeEmitState(io: Server, matchId: string): void {
   const state = matchStore.getMatch(matchId);
   if (!state) return;
   io.to(matchId).emit("match:state", state);
+}
+
+function notifyLobbyListChanged(io: Server): void {
+  io.emit("lobbies:changed");
 }
 
 export function registerGameSockets(io: Server): void {
@@ -52,21 +48,62 @@ export function registerGameSockets(io: Server): void {
 
   io.on("connection", (socket) => {
     socket.on("room:create_or_join", ({ roomCode, heroName }: { roomCode: string; heroName: string }) => {
-      const seats = roomSeats.get(roomCode) ?? [];
+      const code = roomCode.trim();
+      if (!code) {
+        socket.emit("room:error", { message: "Room code is required." });
+        return;
+      }
+
+      const seats = roomSeats.get(code) ?? [];
+      const userId: string = socket.data.user.id;
+      const existing = seats.find((s) => s.userId === userId);
+
+      if (existing) {
+        existing.socketId = socket.id;
+        if (heroName.trim()) {
+          existing.heroName = heroName.trim();
+        }
+        socket.join(code);
+        const seatSummaries = seats.map((s) => ({ seat: s.seat, heroName: s.heroName }));
+        const match = matchStore.getMatch(code);
+        socket.emit("room:joined", {
+          roomCode: code,
+          alreadyInRoom: true,
+          seat: existing.seat,
+          heroName: existing.heroName,
+          seats: seatSummaries,
+          matchId: match?.id ?? null
+        });
+        if (match) {
+          socket.emit("match:state", match);
+        }
+        socket.broadcast.to(code).emit("room:updated", { seats: seatSummaries });
+        notifyLobbyListChanged(io);
+        return;
+      }
+
       if (seats.length >= 4) {
         socket.emit("room:error", { message: "Room full." });
         return;
       }
-      const userId: string = socket.data.user.id;
-      if (seats.some((s) => s.userId === userId)) {
-        socket.emit("room:error", { message: "User already joined room." });
-        return;
-      }
+
       const seat = (seats.length + 1) as SeatIndex;
-      seats.push({ userId, socketId: socket.id, seat, heroName });
-      roomSeats.set(roomCode, seats);
-      socket.join(roomCode);
-      io.to(roomCode).emit("room:updated", { seats: seats.map((s) => ({ seat: s.seat, heroName: s.heroName })) });
+      const displayName = heroName.trim() || "Hero";
+      seats.push({ userId, socketId: socket.id, seat, heroName: displayName });
+      roomSeats.set(code, seats);
+      socket.join(code);
+
+      const seatSummaries = seats.map((s) => ({ seat: s.seat, heroName: s.heroName }));
+      socket.emit("room:joined", {
+        roomCode: code,
+        alreadyInRoom: false,
+        seat,
+        heroName: displayName,
+        seats: seatSummaries,
+        matchId: null
+      });
+      socket.broadcast.to(code).emit("room:updated", { seats: seatSummaries });
+      notifyLobbyListChanged(io);
 
       if (seats.length === 4) {
         const players: MatchPlayer[] = seats.map((s) => ({
@@ -77,9 +114,10 @@ export function registerGameSockets(io: Server): void {
           activeQuestIds: []
         }));
         const rngSeed = Math.floor(Date.now() % 1000000);
-        const match = matchStore.createMatch(roomCode, players, rngSeed);
-        io.to(roomCode).emit("match:start", { matchId: match.id });
-        safeEmitState(io, roomCode);
+        const match = matchStore.createMatch(code, players, rngSeed);
+        io.to(code).emit("match:start", { matchId: match.id });
+        safeEmitState(io, code);
+        notifyLobbyListChanged(io);
       }
     });
 
