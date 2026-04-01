@@ -1,0 +1,15 @@
+{
+  "name": "agantu",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "build": "npm run build -w server && npm run build -w client",
+    "dev": "npm run dev -w server",
+    "test": "npm run test -w server",
+    "lint": "npm run lint -w server && npm run lint -w client"
+  }
+}
