@@ -42,6 +42,10 @@ Free-first implementation scaffold for the Agantu 4-player turn-based web PvP ga
 
 Server validates Supabase JWTs on both REST and Socket.IO handshakes.
 
+### Temporary dev: no login
+
+Set **`AUTH_BYPASS=true`** in `server/.env` and **`VITE_AUTH_BYPASS=true`** in `client/.env`, then restart both processes. Each browser tab gets an anonymous user id; you can open four tabs to fill a room. **Do not enable `AUTH_BYPASS` in production.**
+
 ## Rule Coverage Implemented
 
 - 4-player enforced rooms and seat assignments
