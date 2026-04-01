@@ -19,3 +19,14 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse(process.env);
+
+/**
+ * Anonymous play without JWT. True when AUTH_BYPASS is set, or in development
+ * when Supabase JWT verification is not configured (avoids "Missing token" locally).
+ */
+export function isAuthBypass(): boolean {
+  if (env.AUTH_BYPASS) return true;
+  const hasJwtSecret = Boolean(env.SUPABASE_JWT_SECRET?.trim());
+  if (env.NODE_ENV === "development" && !hasJwtSecret) return true;
+  return false;
+}

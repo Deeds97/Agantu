@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { env } from "../config/env.js";
+import { isAuthBypass } from "../config/env.js";
 import { verifySupabaseJwt } from "./supabase.js";
 
 export interface AuthenticatedRequest extends Request {
@@ -10,7 +10,7 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export function requireAuth(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
-  if (env.AUTH_BYPASS) {
+  if (isAuthBypass()) {
     const authHeader = req.headers.authorization;
     const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : undefined;
     if (token) {

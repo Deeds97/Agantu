@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import { randomUUID } from "node:crypto";
-import { env } from "../config/env.js";
+import { isAuthBypass } from "../config/env.js";
 import { verifySupabaseJwt } from "../auth/supabase.js";
 import { applyTurnAction, ensureSeatCanAct, scoreRewards } from "./engine.js";
 import { matchStore } from "./store.js";
@@ -24,7 +24,7 @@ function safeEmitState(io: Server, matchId: string): void {
 
 export function registerGameSockets(io: Server): void {
   io.use((socket, next) => {
-    if (env.AUTH_BYPASS) {
+    if (isAuthBypass()) {
       const authHeader = socket.handshake.auth.token as string | undefined;
       if (authHeader) {
         try {
@@ -119,10 +119,10 @@ export function registerGameSockets(io: Server): void {
     socket.on("match:reconnect", ({ token }: { token: string }) => {
       const recon = reconnectTokens.get(token);
       if (!recon) return socket.emit("room:error", { message: "Invalid reconnect token." });
-      if (!env.AUTH_BYPASS && recon.userId !== socket.data.user.id) {
+      if (!isAuthBypass() && recon.userId !== socket.data.user.id) {
         return socket.emit("room:error", { message: "Reconnect token mismatch." });
       }
-      if (env.AUTH_BYPASS) {
+      if (isAuthBypass()) {
         socket.data.user = { id: recon.userId };
       }
       socket.join(recon.matchId);

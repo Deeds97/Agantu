@@ -44,7 +44,7 @@ Server validates Supabase JWTs on both REST and Socket.IO handshakes.
 
 ### Temporary dev: no login
 
-Set **`AUTH_BYPASS=true`** in `server/.env` and **`VITE_AUTH_BYPASS=true`** in `client/.env`, then restart both processes. Each browser tab gets an anonymous user id; you can open four tabs to fill a room. **Do not enable `AUTH_BYPASS` in production.**
+Use **`VITE_AUTH_BYPASS=true`** in `client/.env`. The server allows anonymous sockets when **`AUTH_BYPASS=true`** in `server/.env`, or automatically in **`NODE_ENV=development`** if **`SUPABASE_JWT_SECRET`** is not set (so you do not get “Missing token” without configuring Supabase). Each tab gets an anonymous user id; open four tabs with the same room code to test. **Do not rely on auth bypass in production.**
 
 ## Rule Coverage Implemented
 
