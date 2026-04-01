@@ -6,6 +6,18 @@
     <title>Agantu</title>
   </head>
   <body>
+    <header id="lobby-ui" aria-label="Lobby">
+      <label>
+        Room code
+        <input id="room-code" type="text" maxlength="32" placeholder="e.g. test-room" autocomplete="off" />
+      </label>
+      <label>
+        Hero name
+        <input id="hero-name" type="text" maxlength="40" placeholder="Your hero" />
+      </label>
+      <button id="join-room" type="button">Join room</button>
+      <span id="lobby-status" role="status"></span>
+    </header>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

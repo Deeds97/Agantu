@@ -1,0 +1,82 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, sans-serif;
+  color: #e8eaef;
+  background: #12151c;
+}
+
+#lobby-ui {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  padding: 12px 16px;
+  background: #1c2230;
+  border-bottom: 1px solid #2a3344;
+  z-index: 2;
+}
+
+#lobby-ui label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: #9aa3b2;
+}
+
+#lobby-ui input {
+  min-width: 12rem;
+  padding: 6px 10px;
+  border: 1px solid #3d4a5f;
+  border-radius: 6px;
+  background: #12151c;
+  color: #e8eaef;
+  font-size: 0.95rem;
+}
+
+#lobby-ui input:focus {
+  outline: 2px solid #5b8cff;
+  outline-offset: 1px;
+}
+
+#join-room {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #3d6df0;
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#join-room:hover {
+  background: #2f5ad4;
+}
+
+#join-room:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+#lobby-status {
+  font-size: 0.85rem;
+  color: #9aa3b2;
+  flex: 1;
+  min-width: 8rem;
+}
+
+#app {
+  flex: 1;
+  position: relative;
+  min-height: 320px;
+}
